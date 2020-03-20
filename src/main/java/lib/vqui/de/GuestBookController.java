@@ -21,9 +21,8 @@ public class GuestBookController {
 	MongoDbWorker mongoService;
 			
 	@PostMapping("/addEntryGuestBook")
-	public  void addEntry(@RequestBody GuestBookEntryJSON entry) {
-		mongoService.addEnry(entry);
-		return ;
+	public  ReturnJSON addEntry(@RequestBody GuestBookEntryJSON entry) {
+		return mongoService.addEntry(entry);
 	}
 
 	@GetMapping("/readEntriesGuestBook")
