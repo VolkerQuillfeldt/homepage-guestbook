@@ -6,16 +6,21 @@ import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+
+@ComponentScan("lib.vqui.de")
+@Component("EMailService")
 public class EMailService {
 
-	private EMailService() {
-
-	}
-
-	public static void sendMail( String content , String userName) {
+		@Autowired
+		private PasswordService pwService;
+	
+		public void sendMail( String content , String userName) {
 
 		final String fromEmail = "no-reply@vquillfeldt.de"; // requires valid gmail id
-		final String password = "Sorry123$"; // correct password for gmail id
+		final String password = pwService.getEMailPassword(); // correct password for gmail id
 
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.ionos.de"); // SMTP Host

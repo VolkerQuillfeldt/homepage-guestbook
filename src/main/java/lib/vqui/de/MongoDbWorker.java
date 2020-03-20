@@ -1,6 +1,7 @@
 package lib.vqui.de;
 
 import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -9,6 +10,8 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.BasicDBObject;
@@ -18,8 +21,12 @@ import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
+@ComponentScan("lib.vqui.de")
 @Component("MongoDbWorker")
 public class MongoDbWorker {
+	
+	@Autowired
+	private EMailService emailService;
 
 	protected MongoClient mongoClient = null;
 	protected DBCollection guestBookEntries = null;
@@ -52,7 +59,7 @@ public class MongoDbWorker {
 			guestBookEntries.insert(doc);
 			try {
 
-				EMailService.sendMail(entry.getContent(), entry.getUserName());
+				emailService.sendMail(entry.getContent(), entry.getUserName());
 
 			} finally {
 			}
