@@ -40,10 +40,7 @@ public class MongoDbWorker {
 	public ReturnJSON addEntry(GuestBookEntryJSON entry) {
 		ReturnJSON thisReturn = new ReturnJSON();
 		thisReturn.setId(Long.parseLong(entry.getUserId()));
-		
-		System.out.println(entry.getUserId());
-		System.out.println(Long.parseLong(entry.getUserId()));
-		
+
 		try {
 
 			BasicDBObject doc = new BasicDBObject();
@@ -53,24 +50,27 @@ public class MongoDbWorker {
 			doc.put("created", sdf.format(new Date()));
 
 			guestBookEntries.insert(doc);
-			
+			try {
+
+				EMailService.sendMail(entry.getContent(), entry.getUserName());
+
+			} finally {
+			}
+
 		} catch (Exception e) {
-			
+
 			thisReturn.setId(-1);
-			thisReturn.setMessage("Entry not saved:  "+e.getClass().getName());
-			
-		}	
-		
-		
-		System.out.println(thisReturn.getId());
-		
+			thisReturn.setMessage("Entry not saved:  " + e.getClass().getName());
+
+		}
+
 		return thisReturn;
-		
+
 	}
 
 	public List getAllEntries() {
 		LinkedList<GuestBookEntryJSON> entries = new LinkedList<>();
-		BasicDBObject sortObj = new BasicDBObject("_id",-1);
+		BasicDBObject sortObj = new BasicDBObject("_id", -1);
 		Iterator<DBObject> entryIt = guestBookEntries.find().sort(sortObj).iterator();
 		while (entryIt.hasNext()) {
 			BasicDBObject entry = (BasicDBObject) entryIt.next();
