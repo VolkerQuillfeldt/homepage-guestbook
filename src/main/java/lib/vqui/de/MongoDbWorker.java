@@ -11,6 +11,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
@@ -27,14 +28,19 @@ public class MongoDbWorker {
 	
 	@Autowired
 	private EMailService emailService;
+	
+	@Value("${spring.data.mongodb.host}")
+	String mongodbHost;
 
 	protected MongoClient mongoClient = null;
 	protected DBCollection guestBookEntries = null;
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
+	
+	
 	@PostConstruct
 	public void init() {
-		String mongoUrl = "mongodb://guestBookEditor:guestBookEdit@localhost:27017/";
+		String mongoUrl = "mongodb://guestBookEditor:guestBookEdit@"+mongodbHost+":27018/";
 		MongoClientURI connectionString = new MongoClientURI(mongoUrl);
 		mongoClient = new MongoClient(connectionString);
 		DB database = mongoClient.getDB("guestbook");

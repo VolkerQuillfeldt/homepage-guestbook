@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>lib.vqui.de</groupId>
-	<artifactId>guestbook-vqui</artifactId>
+	<artifactId>guestbook-vqui.de</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>guestbook-vqui</name>
 	<description>Spring Boot for VQUI WebPage</description>
