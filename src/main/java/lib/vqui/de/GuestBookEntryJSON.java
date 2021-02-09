@@ -1,35 +1,22 @@
 package lib.vqui.de;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
 public class GuestBookEntryJSON {
 		
 	String userId;
 	String userName;
 	String content;
 	String creationDateTime;
-	public String getUserId() {
-		return userId;
+
+	public GuestBookEntryJSON(GuestBookEntry entry){
+		this.userId = entry.getUserId();
+		this.userName = entry.getUserName();
+		this.content = entry.getContent();
+		this.creationDateTime = entry.getCreationDateTime();
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
-	public String getUserName() {
-		return userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public String getContent() {
-		return content;
-	}
-	public void setContent(String content) {
-		this.content = content;
-	}
-	public String getCreationDateTime() {
-		return creationDateTime;
-	}
-	public void setCreationDateTime(String creationDateTime) {
-		this.creationDateTime = creationDateTime;
-	}
-	
-	
+
 }

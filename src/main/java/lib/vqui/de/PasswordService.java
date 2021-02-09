@@ -2,11 +2,11 @@ package lib.vqui.de;
 
 import java.io.IOException;
 
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import sun.misc.BASE64Decoder;
 
 @SuppressWarnings("restriction")
 @Component("PasswordService")
@@ -33,19 +33,7 @@ public class PasswordService {
 
 			String cipher = encstr.substring(12);
 
-			BASE64Decoder decoder = new BASE64Decoder();
-
-			try {
-
-				return new String(decoder.decodeBuffer(cipher));
-
-			} catch (IOException e) {
-
-				// throw new InvalidImplementationException(
-
-				// Fail
-
-			}
+			return new String(Base64.getDecoder().decode(cipher));
 
 		}
 

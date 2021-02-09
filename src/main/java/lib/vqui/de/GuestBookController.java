@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@ComponentScan("lib.vqui.de")
 public class GuestBookController {
 	
 	@Autowired

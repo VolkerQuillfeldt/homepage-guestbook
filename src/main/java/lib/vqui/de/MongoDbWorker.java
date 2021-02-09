@@ -25,21 +25,25 @@ import com.mongodb.MongoClientURI;
 @ComponentScan("lib.vqui.de")
 @Component("MongoDbWorker")
 public class MongoDbWorker {
-	
-	@Autowired
-	private EMailService emailService;
-	
-	@Value("${spring.data.mongodb.host}")
-	String mongodbHost;
 
-	protected MongoClient mongoClient = null;
-	protected DBCollection guestBookEntries = null;
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+  @Autowired
+  private EMailService emailService;
 
+  @Value("${spring.data.mongodb.host}")
+  String mongodbHost;
+
+  protected MongoClient mongoClient = null;
+  protected DBCollection guestBookEntries = null;
+  private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+
+  @Autowired
+  GuestBookEntryRepository guestBookEntryRepository;
+
+  final static String collection = "entries";
 	
-	
-	@PostConstruct
+	/*@PostConstruct
 	public void init() {
+		System.out.println(mongodbHost);
 		String mongoUrl = "mongodb://guestBookEditor:guestBookEdit@"+mongodbHost+":27018/";
 		MongoClientURI connectionString = new MongoClientURI(mongoUrl);
 		mongoClient = new MongoClient(connectionString);
@@ -48,53 +52,38 @@ public class MongoDbWorker {
 		if (guestBookEntries == null) {
 			guestBookEntries = database.createCollection("entries", null);
 		}
-	}
+	}*/
 
-	public ReturnJSON addEntry(GuestBookEntryJSON entry) {
-		ReturnJSON thisReturn = new ReturnJSON();
-		thisReturn.setId(Long.parseLong(entry.getUserId()));
+  public ReturnJSON addEntry(GuestBookEntryJSON entry) {
+    ReturnJSON thisReturn = new ReturnJSON();
+    thisReturn.setId(Long.parseLong(entry.getUserId()));
 
-		try {
+    try {
 
-			BasicDBObject doc = new BasicDBObject();
-			doc.put("userId", entry.getUserId());
-			doc.put("userName", entry.getUserName());
-			doc.put("content", entry.getContent());
-			doc.put("created", sdf.format(new Date()));
+      System.out.println("json" + entry);
+      GuestBookEntry guestBookEntry = new GuestBookEntry(entry);
+      guestBookEntry.setCreationDateTime(sdf.format(new Date()));
+      guestBookEntryRepository.save(guestBookEntry);
 
-			guestBookEntries.insert(doc);
-			try {
+    } catch (Exception e) {
 
-				emailService.sendMail(entry.getContent(), entry.getUserName());
+      thisReturn.setId(-1);
+      thisReturn.setMessage("Entry not saved:  " + e.getClass().getName());
 
-			} finally {
-			}
+    }
 
-		} catch (Exception e) {
+    return thisReturn;
 
-			thisReturn.setId(-1);
-			thisReturn.setMessage("Entry not saved:  " + e.getClass().getName());
+  }
 
-		}
+  public List getAllEntries() {
 
-		return thisReturn;
-
-	}
-
-	public List getAllEntries() {
-		LinkedList<GuestBookEntryJSON> entries = new LinkedList<>();
-		BasicDBObject sortObj = new BasicDBObject("_id", -1);
-		Iterator<DBObject> entryIt = guestBookEntries.find().sort(sortObj).iterator();
-		while (entryIt.hasNext()) {
-			BasicDBObject entry = (BasicDBObject) entryIt.next();
-			GuestBookEntryJSON thisJson = new GuestBookEntryJSON();
-			thisJson.setContent(entry.getString("content"));
-			thisJson.setUserId(entry.getString("userId"));
-			thisJson.setUserName(entry.getString("userName"));
-			thisJson.setCreationDateTime(entry.getString("created"));
-			entries.add(thisJson);
-		}
-		return entries;
-	}
+    LinkedList<GuestBookEntryJSON> entries = new LinkedList<>();
+        guestBookEntryRepository.findAll().forEach(entry -> entries.add(
+          new GuestBookEntryJSON(entry)
+        ));
+        
+    return entries;
+  }
 
 }
