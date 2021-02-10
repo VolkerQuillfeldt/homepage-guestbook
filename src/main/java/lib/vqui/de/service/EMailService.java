@@ -1,17 +1,13 @@
-package lib.vqui.de;
+package lib.vqui.de.service;
 
 import java.util.Properties;
-
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@ComponentScan("lib.vqui.de")
-@Component("EMailService")
+@Service
 public class EMailService {
 
 		@Autowired
@@ -20,7 +16,7 @@ public class EMailService {
 		public void sendMail( String content , String userName) {
 
 		final String fromEmail = "no-reply@vquillfeldt.de"; // requires valid gmail id
-		final String password = pwService.getEMailPassword(); // correct password for gmail id
+		String password = pwService.getEMailPassword(); // correct password for gmail id
 
 		Properties props = new Properties();
 		props.put("mail.smtp.host", "smtp.ionos.de"); // SMTP Host
